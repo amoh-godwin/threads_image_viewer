@@ -12,12 +12,14 @@ ApplicationWindow {
 
     StackView {
         anchors.fill: parent
-        initialItem: start_image ? img_start : browser_start
+        initialItem: start_image ? img_start : exprorer_start
     }
 
     Comp.ImageStart {
         id: img_start
     }
+
+
 
 
 
