@@ -8,9 +8,15 @@ ApplicationWindow {
     height: 500
     title: "Sky viewer"
 
+    property url start_image: ""
 
     StackView {
         anchors.fill: parent
+        initialItem: start_image ? img_start : browser_start
+    }
+
+    Comp.ImageStart {
+        id: img_start
     }
 
 
