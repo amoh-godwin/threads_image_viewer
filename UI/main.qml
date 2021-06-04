@@ -9,9 +9,11 @@ ApplicationWindow {
     title: "Sky viewer"
 
 
-    ColumnLayout {
+    StackView {
         anchors.fill: parent
     }
+
+
 
 
 }
