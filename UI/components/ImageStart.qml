@@ -11,12 +11,20 @@ Component {
             id: img_area
             anchors.fill: parent
             color: "transparent"
+
+            Image {
+                source: "../test/flamingo.jpg"
+                anchors.fill: parent
+                fillMode: Image.PreserveAspectFit
+            }
+
         }
 
         Rectangle {
             width: parent.width
             height: 48
             color: "#77000000"
+
         }
 
     }
