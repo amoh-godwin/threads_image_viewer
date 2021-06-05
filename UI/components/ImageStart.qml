@@ -7,7 +7,7 @@ Component {
 
     Rectangle {
         id: root
-        color: "darkgrey"
+        color: "#1C1B1B"
 
         ColumnLayout {
             anchors.fill: parent
