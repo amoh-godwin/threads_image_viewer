@@ -9,7 +9,7 @@ Button {
     background: Rectangle {
         implicitWidth: 78
         implicitHeight: 56
-        color: bgcolor
+        color: "transparent"
     }
 
     contentItem: Text {
