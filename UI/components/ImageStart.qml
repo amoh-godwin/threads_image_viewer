@@ -8,23 +8,30 @@ Component {
         id: root
         color: "darkgrey"
 
-        Rectangle {
-            id: img_area
+        ColumnLayout {
             anchors.fill: parent
-            color: "transparent"
+            spacing: 0
 
-            Image {
-                source: start_image
-                anchors.fill: parent
-                fillMode: Image.PreserveAspectFit
+            Rectangle {
+                Layout.fillWidth: true
+                Layout.preferredHeight: 48
+                color: "#77000000"
+
             }
 
-        }
+            Rectangle {
+                id: img_area
+                Layout.fillWidth: true
+                Layout.fillHeight: true
+                color: "transparent"
 
-        Rectangle {
-            width: parent.width
-            height: 48
-            color: "#77000000"
+                Image {
+                    source: start_image
+                    anchors.fill: parent
+                    fillMode: Image.PreserveAspectFit
+                }
+
+            }
 
         }
 
