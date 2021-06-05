@@ -41,6 +41,24 @@ Component {
 
         }
 
+        RowLayout {
+            anchors.centerIn: parent
+            width: parent.width
+            height: 48
+
+            Cust.CustButton {
+                text: "<"
+            }
+
+            Cust.CustButton {
+                Layout.alignment: Qt.AlignRight
+                text: ">"
+            }
+
+
+
+        }
+
     }
 
 

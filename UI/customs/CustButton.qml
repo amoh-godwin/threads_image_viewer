@@ -7,9 +7,9 @@ Button {
     property color bgcolor: "#4C4A48"
 
     background: Rectangle {
-        implicitWidth: 128
-        implicitHeight: 48
-        color: root.hovered ? bgcolor : "transparent"
+        implicitWidth: 78
+        implicitHeight: 56
+        color: bgcolor
     }
 
     contentItem: Text {
@@ -17,7 +17,7 @@ Button {
         font: root.font
         verticalAlignment: Text.AlignVCenter
         horizontalAlignment: Text.AlignHCenter
-        color: "white"
+        color: root.hovered ? "white" : "transparent"
     }
 
 }

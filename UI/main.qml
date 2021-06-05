@@ -9,7 +9,7 @@ ApplicationWindow {
     height: 500
     title: "Sky viewer"
 
-    property bool start_image: false
+    property bool start_image: true
     property url actual_image: "file:///"
 
     StackView {
