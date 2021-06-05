@@ -32,7 +32,7 @@ Component {
                 color: "transparent"
 
                 Image {
-                    source: start_image
+                    source: actual_image
                     anchors.fill: parent
                     fillMode: Image.PreserveAspectFit
                 }

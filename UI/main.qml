@@ -9,18 +9,19 @@ ApplicationWindow {
     height: 500
     title: "Sky viewer"
 
-    property url start_image: "file:///"
+    property bool start_image: true
+    property url actual_image: "file:///"
 
     StackView {
         anchors.fill: parent
-        initialItem: start_image ? img_start : explrorer_start
+        initialItem: start_image ? img_start : explorer_start
     }
 
     Comp.ImageStart {
         id: img_start
 
         Component.onCompleted: {
-            start_image = "./test/flamingo.jpg"
+            actual_image = "./test/flamingo.jpg"
         }
     }
 
