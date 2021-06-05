@@ -5,6 +5,7 @@ import QtQuick.Layouts 1.15
 Component {
 
     Rectangle {
+        id: root
         color: "darkgrey"
 
         Rectangle {
@@ -13,7 +14,7 @@ Component {
             color: "transparent"
 
             Image {
-                source: "../test/flamingo.jpg"
+                source: start_image
                 anchors.fill: parent
                 fillMode: Image.PreserveAspectFit
             }
@@ -28,5 +29,6 @@ Component {
         }
 
     }
+
 
 }

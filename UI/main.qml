@@ -18,6 +18,10 @@ ApplicationWindow {
 
     Comp.ImageStart {
         id: img_start
+
+        Component.onCompleted: {
+            start_image = "./test/flamingo.jpg"
+        }
     }
 
     Comp.ExplorerStart {
