@@ -9,6 +9,7 @@ ApplicationWindow {
     height: 500
     title: "Sky viewer"
 
+    property QtObject backend
     property bool start_image: true
     property url actual_image: "file:///"
 
