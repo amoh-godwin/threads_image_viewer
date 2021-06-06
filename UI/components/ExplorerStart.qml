@@ -34,6 +34,7 @@ Component {
                         Layout.fillWidth: true
                         Layout.preferredHeight: 480
                         color: "black"
+
                     }
 
                 }
