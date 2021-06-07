@@ -10,7 +10,6 @@ from func import PhotoViewer
 
 if len(sys.argv) > 1:
     real_path = os.path.realpath(sys.argv[1])
-    uf_path = os.path.dirname(real_path)
     user_file = 'file:///' + real_path
 
 app = QGuiApplication(sys.argv)
@@ -19,7 +18,7 @@ engine = QQmlApplicationEngine()
 engine.load('UI/main.qml')
 engine.quit.connect(app.quit)
 
-back_end = PhotoViewer(foldername=uf_path)
+back_end = PhotoViewer(currfile=real_path)
 engine.rootObjects()[0].setProperty('backend', back_end)
 engine.rootObjects()[0].setProperty('actual_image', user_file)
 
