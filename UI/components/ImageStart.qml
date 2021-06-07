@@ -36,6 +36,8 @@ Component {
                     source: actual_image
                     anchors.fill: parent
                     fillMode: Image.PreserveAspectFit
+
+
                 }
 
             }
@@ -49,11 +51,17 @@ Component {
 
             Cust.CustButton {
                 text: "<"
+
+                onClicked: backend.get_next_image('left')
+
             }
 
             Cust.CustButton {
                 Layout.alignment: Qt.AlignRight
                 text: ">"
+
+                onClicked: backend.get_next_image('right')
+
             }
 
 
