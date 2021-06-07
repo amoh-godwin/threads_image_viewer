@@ -31,8 +31,13 @@ ApplicationWindow {
     }
 
 
+    Connections {
+        target: backend
 
-
+        function onChangeImage(new_file) {
+            actual_image = new_file
+        }
+    }
 
 
 }

@@ -18,6 +18,8 @@ class PhotoViewer(QObject):
 
         self.find_other_images()
 
+    changeImage = pyqtSignal(str, arguments=['change_image'])
+
     def find_other_images(self) -> None:
         self.folder = os.path.dirname(self.curr_file)
         mainfile = os.path.split(self.curr_file)[-1]
@@ -47,4 +49,6 @@ class PhotoViewer(QObject):
         self.curr_img = f'file:///{os.path.join(self.folder, curr_img)}'
         self.change_image()
 
+    def change_image(self):
+        self.changeImage.emit(self.curr_img)
 
