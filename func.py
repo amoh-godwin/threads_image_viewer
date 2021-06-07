@@ -49,7 +49,11 @@ class PhotoViewer(QObject):
 
     @pyqtSlot(str)
     def get_next_image(self, direction):
+        f_thread = threading.Thread(target=self._get_next_image, args=[direction])
+        f_thread.daemon = True
+        f_thread.start()
 
+    def _get_next_image(self, direction):
         if direction == 'left':
             self.curr_index -= 1
         else:
