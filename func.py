@@ -11,16 +11,18 @@ class PhotoViewer(QObject):
         super().__init__()
         self.curr_file = currfile
         self.curr_index = 0
+        self.curr_img = ""
+        self.folder = ""
         self.supported_formats = ['.jpeg', '.jpg', '.png', '.gif']
         self.image_list = deque([])
 
         self.find_other_images()
 
     def find_other_images(self) -> None:
-        folder = os.path.dirname(self.curr_file)
+        self.folder = os.path.dirname(self.curr_file)
         mainfile = os.path.split(self.curr_file)[-1]
 
-        conts = os.listdir(folder)
+        conts = os.listdir(self.folder)
 
         self.image_list = deque([
             x for x in conts
@@ -32,5 +34,17 @@ class PhotoViewer(QObject):
             if mainfile == img:
                 self.curr_index = ind
 
-        print(self.image_list)
+        print(self.curr_index)
+
+    @pyqtSlot(str)
+    def get_next_image(self, direction):
+        if direction == 'left':
+            self.curr_index -= 1
+        else:
+            self.curr_index += 1
+
+        curr_img = self.image_list[self.curr_index]
+        self.curr_img = f'file:///{os.path.join(self.folder, curr_img)}'
+        self.change_image()
+
 
