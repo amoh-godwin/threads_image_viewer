@@ -40,6 +40,7 @@ class PhotoViewer(QObject):
 
     @pyqtSlot(str)
     def get_next_image(self, direction):
+
         if direction == 'left':
             self.curr_index -= 1
         else:
