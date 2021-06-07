@@ -17,7 +17,7 @@ class PhotoViewer(QObject):
         self.find_other_images()
 
     def find_other_images(self) -> None:
-        folder = os.path.realpath(self.curr_file)
+        folder = os.path.dirname(self.curr_file)
         mainfile = os.path.split(self.curr_file)[-1]
 
         conts = os.listdir(folder)
