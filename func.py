@@ -12,25 +12,26 @@ class PhotoViewer(QObject):
 
     def __init__(self, currfile=""):
         super().__init__()
+        self.curr_file = currfile
         self.curr_index = 0
         self.curr_img = ""
         self.folder = ""
         self.supported_formats = ['.jpeg', '.jpg', '.png', '.gif']
         self.image_list = deque([])
 
-        self.find_other_images(currfile)
+        self.find_other_images()
 
     changeImage = pyqtSignal(str, arguments=['change_image'])
 
-    def find_other_images(self, curr_file) -> None:
-        f_thread = threading.Thread(target=self._find_other_images, args=[curr_file])
+    def find_other_images(self) -> None:
+        f_thread = threading.Thread(target=self._find_other_images)
         f_thread.daemon = True
         f_thread.start()
 
-    def _find_other_images(self, curr_file):
+    def _find_other_images(self):
 
-        self.folder = os.path.dirname(curr_file)
-        mainfile = os.path.split(curr_file)[-1]
+        self.folder = os.path.dirname(self.curr_file)
+        mainfile = os.path.split(self.curr_file)[-1]
 
         conts = os.listdir(self.folder)
 
