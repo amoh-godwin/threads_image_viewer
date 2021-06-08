@@ -41,7 +41,7 @@ Component {
         RowLayout {
             anchors.centerIn: parent
             width: parent.width
-            height: 48
+            height: 56
 
             Cust.CustButton {
                 text: "<"
