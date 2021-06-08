@@ -18,12 +18,6 @@ Component {
                 Layout.preferredHeight: 48
                 color: "#77000000"
 
-                Cust.CustButton {
-                    height: 48
-                    anchors.right: parent.right
-                    text: "Lookup"
-                }
-
             }
 
             Rectangle {
