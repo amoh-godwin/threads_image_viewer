@@ -9,7 +9,7 @@ Button {
     background: Rectangle {
         implicitWidth: 78
         implicitHeight: 56
-        color: "transparent"
+        color: root.hovered ? "#50ffffff": "transparent"
     }
 
     contentItem: Text {
