@@ -43,3 +43,68 @@ ApplicationWindow {
 }
 ```
 
+I am sure you already know what the above code does. It creates a window with a title **Sky viewer**.
+
+Next we add a Rectangle which will essentially be a background. We haven't discussed layouts yet, but its not complex. You will understand it usage by practicing with it. So inside the Rectangle we add a ColumnLayout and a RowLayout on top of the ColumnLayout. The RowLayout would hold the left and right button that will be used to switch between images in the same folder.
+
+NB: The three dots (**...**) represents already existing code.
+
+
+
+```QML
+...
+title: "Sky viewer"
+
+Rectangle {
+    anchors.fill: parent
+    color: "#1C1B1B"
+
+    ColumnLayout {
+        anchors.fill: parent
+        spacing: 0
+    }
+    
+    RowLayout {
+        anchors.centerIn: parent
+        width: parent.width
+        height: 56
+    }
+
+}
+
+...
+```
+
+A little not about ColumnLayout and RowLayout is ColumnLayout gives you a column and all the items in there are laid-out as rows whiles a RowLayout gives you a Row and All the items in there are laid-out as columns.
+
+
+
+Next, inside the ColumnLayout that will be the main Image area. We will have two Rectangles, one on top acting as some kind of nav bar and another for the actual Image below that Nav bar.
+
+
+
+```QML
+...
+
+ColumnLayout {
+	...
+	
+    Rectangle {
+    	id: navbar
+        Layout.fillWidth: true
+        Layout.preferredHeight: 48
+        color: "#77000000"
+    }
+
+    Rectangle {
+        id: img_area
+        Layout.fillWidth: true
+        Layout.fillHeight: true
+        color: "transparent"
+    }
+
+}
+...
+```
+
+The Rectangle that handles the navbar has been given the id: navbar ( not necessary, you can ignore) and a color of black with 77% opacity. The Rectangle that handles the actual image area has and id: img_area and  a transparent color, because the app background already has a color of #1C1B1B.
