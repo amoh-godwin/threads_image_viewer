@@ -6,7 +6,6 @@ import "../customs" as Cust
 Component {
 
     Rectangle {
-        id: root
         color: "#1C1B1B"
 
         ColumnLayout {
@@ -14,6 +13,7 @@ Component {
             spacing: 0
 
             Rectangle {
+                id: navbar
                 Layout.fillWidth: true
                 Layout.preferredHeight: 48
                 color: "#77000000"
