@@ -2,22 +2,22 @@ import QtQuick 2.15
 import QtQuick.Controls 2.15
 
 Button {
-    id: root
+    id: ctrl
 
     property color bgcolor: "#4C4A48"
 
     background: Rectangle {
         implicitWidth: 78
         implicitHeight: 56
-        color: root.hovered ? "#50ffffff": "transparent"
+        color: ctrl.hovered ? "#50ffffff": "transparent"
     }
 
     contentItem: Text {
-        text: root.text
-        font: root.font
+        text: ctrl.text
+        font: ctrl.font
         verticalAlignment: Text.AlignVCenter
         horizontalAlignment: Text.AlignHCenter
-        color: root.hovered ? "white" : "transparent"
+        color: ctrl.hovered ? "white" : "transparent"
     }
 
 }
