@@ -31,7 +31,6 @@ Component {
                     anchors.fill: parent
                     fillMode: Image.PreserveAspectFit
 
-
                 }
 
             }
@@ -39,6 +38,7 @@ Component {
         }
 
         RowLayout {
+            id: switch_buttons_cont
             anchors.centerIn: parent
             width: parent.width
             height: 56
