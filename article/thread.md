@@ -18,12 +18,13 @@ The folder structure should look something similar to the structure below.
 ```
 - theaded_image_viewer
 	- UI
+		- test
 		- main.qml
 	- main.py
 
 ```
 
-You can see from the structure above that **UI** is a folder within **threaded_image_viewer** folder
+You can see from the structure above that **UI** is a folder within **threaded_image_viewer** folder and that **test** is also a folder within **UI**
 
 
 
@@ -65,6 +66,7 @@ Rectangle {
     }
     
     RowLayout {
+    	id: switch_buttons_cont
         anchors.centerIn: parent
         width: parent.width
         height: 56
@@ -107,4 +109,154 @@ ColumnLayout {
 ...
 ```
 
-The Rectangle that handles the navbar has been given the id: navbar ( not necessary, you can ignore) and a color of black with 77% opacity. The Rectangle that handles the actual image area has and id: img_area and  a transparent color, because the app background already has a color of #1C1B1B.
+The Rectangle that handles the navbar has been given the id: navbar ( not necessary, you can ignore) and a color of black with 77% opacity. The Rectangle that handles the actual image area has and id: **img_area** and  a transparent color, because the app background already has a color of **#1C1B1B**.
+
+
+
+Next put the Image type that will be used to render the image that the user wants
+
+```QML
+...
+Rectangle {
+    id: img_area
+    ...
+    
+    Image {
+        source: "path/to/some/image"
+        anchors.fill: parent
+        fillMode: Image.PreserveAspectFit
+    }
+    
+}
+...
+```
+
+
+
+Put some image in the test folder that we created above, to test the layout of the image. 
+
+```QML
+...
+source: "./test/some_image.jpg"
+...
+```
+
+
+
+The anchors.fill: parent and the fillMode: Image.PreserveAspectFit are the ones controling the dimensions of the image. We will need this because:
+
+ 1. The user can change the image size at anytime either through a zoom button or by resizing the window itself.
+
+ 2. The user should see the entirety of the image is there is no zooming. If the image is tall the entirety will be shown as so, if its equal on both ends, it will be shown as so.
+
+    
+
+***
+
+
+
+We will need a property to hold the source of the image because the source will be varied, in this case, the user will press buttons to change it. We will create a property of type `url` and call it `actual_image`
+
+```QML
+...
+title: "Sky viewer"
+
+property url actual_image: ""
+
+...
+```
+
+You could have used a `string` as the type for the source but a `url` is the best suited type for a file path.
+
+Now we will use it as the source of the Image type
+
+```QML
+...
+
+    ...
+
+    Image {
+        source: actual_image  // used to be "path/to/some/image"
+        anchors.fill: parent
+        fillMode: Image.PreserveAspectFit
+    }
+
+...
+```
+
+
+
+We would need to create the buttons that will be used to switch between images.
+
+Inside the RowLayout with id: `switch_buttons_cont`, will we put these buttons.
+
+
+
+```QML
+...
+RowLayout {
+    id: switch_buttons_cont
+    ...
+    
+    Button {
+    	text: "<"
+    }
+    
+    Button {
+    	Layout.alignment: Qt.AlignRight
+    	text: ">"
+    }
+    
+}
+...
+```
+
+You can see that we have ordinary buttons and that the second one has been aligned to the right side. But we would have to customise the buttons a bit.
+
+Create a new folder named 'customs' and a new file named 'CustButton.qml', so that the new structure is like shown below:
+
+```
+- theaded_image_viewer
+	- UI
+		- customs
+			- CustButton.qml
+		- test
+		- main.qml
+	- main.py
+```
+
+Open up CustButton.qml and write the import statements and normal button codes.
+
+```QML
+import QtQuick 2.15
+import QtQuick.Controls 2.15
+
+Button {
+	id: ctrl
+}
+```
+
+Next customise the background and the contentItem properties
+
+```QML
+...
+Button {
+	id: ctrl
+	
+	background: Rectangle {
+        implicitWidth: 78
+        implicitHeight: 56
+        color: ctrl.hovered ? "#50ffffff": "transparent"
+    }
+
+    contentItem: Text {
+        text: ctrl.text
+        font: ctrl.font
+        verticalAlignment: Text.AlignVCenter
+        horizontalAlignment: Text.AlignHCenter
+        color: ctrl.hovered ? "white" : "transparent"
+    }
+	
+}
+```
+
