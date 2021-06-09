@@ -161,7 +161,7 @@ We will need a property to hold the source of the image because the source will 
 ...
 title: "Sky viewer"
 
-property url actual_image: ""
+property url actual_image: "./test/some_image.jpg"
 
 ...
 ```
@@ -259,4 +259,66 @@ Button {
 	
 }
 ```
+
+Save the file so that now. The full contents of the CustButton.qml is:
+
+```QML
+import QtQuick 2.15
+import QtQuick.Controls 2.15
+
+Button {
+	id: ctrl
+
+	background: Rectangle {
+        implicitWidth: 78
+        implicitHeight: 56
+        color: ctrl.hovered ? "#50ffffff": "transparent"
+    }
+
+    contentItem: Text {
+        text: ctrl.text
+        font: ctrl.font
+        verticalAlignment: Text.AlignVCenter
+        horizontalAlignment: Text.AlignHCenter
+        color: ctrl.hovered ? "white" : "transparent"
+    }
+
+}
+
+```
+
+Now inside the main.qml import the CustButton.qml. You do this by importing the parent folder and creating a namespace out of it.
+
+```QML
+...
+import QtQuick.Layouts 1.15
+import "../customs" as Cust
+
+...
+```
+
+The namespace Cust can then be used to access the **CustButton.qml**.
+
+In the `RowLayout` with `id: switch_buttons_cont`. change the Buttons to `CustButtons`.
+
+```QML
+...
+RowLayout {
+    id: switch_buttons_cont
+    ...
+
+    Cust.CustButton {
+    	text: "<"
+    }
+    
+    Cust.CustButton {
+    	Layout.alignment: Qt.AlignRight
+    	text: ">"
+    }
+    
+}
+...
+```
+
+
 
