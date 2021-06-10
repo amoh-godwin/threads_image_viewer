@@ -682,3 +682,134 @@ for img in self.image_list:
 ```
 
 is actually getting the index of the file the user asked to be shown, this will be used to control images that will be shown as the next and previous images of the user's image when those buttons are clicked.
+
+Did you notice that we are running the `find_other_images` function in the `__init__` , from the line:
+
+```python
+self.find_other_images()
+```
+
+
+
+Now in the main.py, pass the real_path to the class when we call it.
+
+```python
+...
+
+back_end = PhotoViewer(currfile=real_path)
+engine.rootObjects()[0].setProperty('backend', back_end)
+...
+```
+
+
+
+In most instances, the image might be in a folder that has many other images or files, and that will slow down the time it takes for the UI to be fully ready (even though list comprehensions are fast), it will freeze between the time the `engine.load('UI/main.qml')` was run till the time `back_end = PhotoViewer(currfile=real_path)` is done with the initialization. That will cause our now white UI to be unresponsive for sometime.
+
+*show image*
+
+
+
+To show this try using an image you have say in the Downloads folder.
+
+```shell
+$ python main.py C:/Users/user_name/Downloads/some_image.jpg
+```
+
+
+
+In other for our app to be build for all user cases, we should presume that some user somewhere have such a folder with so many files, from where he will call our application to show his image.
+
+It simple, lets experiment with the sleep function.
+
+Sleep on the `find_other_images` function for 2 seconds, see what happens to the UI.
+
+```python
+import os
+from time import sleep
+...
+
+	...
+
+	def find_other_images(self) -> None:
+        ...
+        self.image_list = deque([
+    		x for x in conts
+     		 if os.path.splitext(x)[-1] in self.supported_formats])
+        
+        sleep(2)
+        
+        ...
+
+```
+
+The UI will freeze for at least 2 seconds. Imagine what the user will feel about his system specs. But is not entirely the reason why the UI is slow, is partly due to the fact that we are not using Threads, for something that threads should handle.
+
+So enter in, Threads.
+
+Threads can handle tasks concurrently. So we initialize and object and move on to complete the UI, all whiles we are crawling the parent folder of the image in the background.
+
+Python has sufficient threading functions, Qt also has threading functions. read more on that here. We will use native python threading in this tutorial.
+
+How you use threading is that you call the Thread object, you tell it the function you want to run and the parameters with which it should run and the Thread object call the function for you in its own thread.
+
+So lets get to it.
+
+
+
+```python
+...
+from time import sleep
+import threading
+...
+
+class PhotoViewer(QObject):
+
+
+    def __init__(self, currfile: str = ""):
+        super().__init__()
+        ...
+        self.find_other_images()
+
+    def find_other_images(self) -> None:
+        find_thread = threading.Thread(target=self._find_other_images)
+        find_thread.daemon = True
+        find_thread.start()
+
+    def _find_other_images(self):
+
+        self.folder = os.path.dirname(self.curr_file)
+        mainfile = os.path.split(self.curr_file)[-1]
+
+        ...
+
+        sleep(2)
+        
+        ...
+
+```
+
+
+
+From the above code, you can see that we now have two seemingly identical methods, one is an underscore function or method. The underscore function is used to discourage people from calling it directly, it always shows up at the bottom of autocompletion dialog boxes. The underscore method is the one that is doing the old job of the find_other_images method. We could have used a completely different name without underscores, but for pragmatics sake, we used an underscore method. and in the `find_other_images` method we are calling the Thread object and telling which method to run in a thread with the line
+
+```python
+find_thread = threading.Thread(target=self._find_other_images)
+```
+
+the `find_thread.daemon = True` code makes sure that when the main thread the created this thread has terminated, this newly created thread should also terminate. This is some really important code, in the world of threading, especially if you would have a forever loop run in a threaded method or function. The line:
+
+```pyton
+find_thread.start()
+```
+
+is what actually starts your method.
+
+
+
+You can see that we are still calling the `self.find_other_images` method in the `__init__`. Because that is what we want, we don't want to call the underscore method it will create the same problem as before.
+
+Any method the `self.find_other_images`, will have it return immediately thinking it is done with its job, not knowing it started a thread for a method and that that method is running in the background. That way, the code doesn't have to wait for the method to be complete, because, it thinks that the method has completed.
+
+
+
+Now run it again and the 2 seconds delay is gone, even the sleep code is still there.
