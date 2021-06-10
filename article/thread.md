@@ -598,12 +598,16 @@ All should be well if you should run this.
 Now inside our PhotoViewer class we should be crawling the parent folder the image the user wants to see.
 
 ```python
-...
+import os
+from collections import deque
+
+from PyQt5.QtCore import QObject
+
 
 class PhotoViewer(QObject):
 
 
-    def __init__(self, currfile=""):
+    def __init__(self, currfile: str = ""):
         super().__init__()
         self.curr_file = currfile
         self.curr_index = 0
@@ -611,7 +615,9 @@ class PhotoViewer(QObject):
         self.supported_formats = ['.jpeg', '.jpg', '.png', '.gif']
         self.image_list = deque([])
 
-	def find_other_images(self):
+        self.find_other_images()
+
+	def find_other_images(self) -> None:
 
         self.folder = os.path.dirname(self.curr_file)
         mainfile = os.path.split(self.curr_file)[-1]
@@ -628,7 +634,51 @@ class PhotoViewer(QObject):
             if mainfile == img:
                 self.curr_index = ind
 
-        print(self.curr_index)
 
 ```
 
+
+
+First of before we are able to crawl the parent folder, the class will have to get access to the filename or the folder name. We pass the filename to it, when we initialise it,
+
+hence the code: 
+```python
+def __init__(self, currfile: str = ""):
+```
+
+Notice we are using annotations, so without the annotations the code could have been written as:
+
+```python
+def __init__(self, currfile = ""):
+```
+
+Also notice that the `self.image_list` is using the deque (pronounced: deck)  advanced type instead of the base list type. This is because the default list doesn't store items according to any particular order and when you keep appending to it on the fly, the indexing begins to misbehave. I recently run into trouble with it, and now I am a fan of the deque type from the collections module.
+
+When it comes to the find_other_images function:
+
+Again you can see, that we are using annotations, the function declaration could have been written as
+
+```python
+def find_other_images(self):
+```
+
+
+
+ Also the,
+
+```python
+self.image_list = deque([
+    x for x in conts
+     if os.path.splitext(x)[-1] in self.supported_formats])
+```
+
+list comprehension is actually looking for files whose file extension match one of the items in the `self.supported_formats`, essentially we are looking for images. You can add to it, but here is a list of supported image formats for the QML Image type.
+
+The code beginning from:
+
+```python
+ind = -1
+for img in self.image_list:
+```
+
+is actually getting the index of the file the user asked to be shown, this will be used to control images that will be shown as the next and previous images of the user's image when those buttons are clicked.
