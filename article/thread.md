@@ -417,6 +417,28 @@ sys.exit(app.exec())
 
 ```
 
+Change directory into the project folder
+
+```shell
+$ cd H:/Desktop/threaded_image_viewer
+```
+
+should give
+
+```shell
+H:/Desktop/threaded_image_viewer$
+```
+
+
+
+Run it by doing
+
+```shell
+$ python main.py
+```
+
+
+
 Now the app starts all is well.
 
 
@@ -429,4 +451,148 @@ $ path/to/image_viewer_app.exe C:/path/to/image.jpeg
 
 So your app knows what image your showing from the command line argument.
 
+
+
 Lets handle command line arguments.
+
+
+
+```python
+import sys
+import os
+
+...
+from PyQt5.QtQml import QQmlApplicationEngine
+
+
+if len(sys.argv) > 1:
+    real_path = os.path.realpath(sys.argv[1])
+    user_file = 'file:///' + real_path
+
+...
+
+```
+
+`sys.argv` actually holds all the command line arguments passed to the application. Its a list and always the  first item is the full path the current file we are running, and not the user supplied arguments. In this case, the first item would be: **path/to/main.py**. So we check if there is more than one items, meaning the user did pass arguments to the application. You can see we are getting the real path out user supplied argument, just in case it was a relative path. Next we prepend it with a file protocol **(file:///)** , it could have also been and http protocol **(http://)**. When using full paths in QML, drive letters (**H:/**, **C**:/, **D:/**) confuses the system, so you have to prepend it with the file protocol (**file:///**).
+
+Next we set that to the value of the `actual_image` QML property, so that the app starts showing the users image. It is also time to make the property empty by default
+
+```QML
+property url actual_image: ""
+```
+
+
+
+```python
+
+...
+engine.quit.connect(app.quit)
+engine.rootObjects()[0].setProperty('actual_image', user_file)
+
+...
+```
+
+Now you should run the file with a command line argument
+
+```shell
+$ python main.py ./test/some_image.jpg
+```
+
+You should see a beautiful image.
+
+
+
+Now what we really want to do for our threading illustration is that. Most image viewer apps have next and previous buttons that allow you to see other pictures also in the same folder. This is why we added the buttons in `id: switch_buttons_cont`
+
+Lets create a subclass of QObject like we did for the clock.
+
+Create a file by main.py and name it func.py.
+
+So the new structure looks something similar to this:
+
+```
+- theaded_image_viewer
+	- UI
+		- customs
+			- CustButton.qml
+		- test
+		- main.qml
+	- main.py
+	- func.py
+```
+
+
+
+Inside func.py subclass QObject and call it PhotoViewer
+
+
+
+```python
+from PyQt5.QtCore import QObject
+
+
+class PhotoViewer(QObject):
+
+
+    def __init__(self):
+        super().__init__()
+
+```
+
+We are calling the `super().__init__()` instead of `QObject().__init__(self)`. The super() way is best.
+
+
+
+Before we add any methods to it. Lets import it into the main and send it over to QML as a property.
+
+
+
+```python
+...
+from PyQt5.QtQml import QQmlApplicationEngine
+
+from func import PhotoViewer
+
+
+if len(sys.argv) > 1:
+...
+engine.quit.connect(app.quit)
+
+back_end = PhotoViewer()
+engine.rootObjects()[0].setProperty('actual_image', user_file)
+
+...
+```
+
+
+
+Create a QML property backend that will receive the back_end object.
+
+```QML
+...
+title: "Sky viewer"
+
+property QtObject backend
+property url actual_image: ""
+...
+```
+
+
+
+Now set the back_end python object to the backend QML property
+
+```QML
+...
+
+back_end = PhotoViewer()
+engine.rootObjects()[0].setProperty('backend', back_end)
+engine.rootObjects()[0].setProperty('actual_image', user_file)
+
+...
+```
+
+All should be well if you should run this.
+
+
+
+Now inside our PhotoViewer class we should be crawling the parent folder the image the user wants to see.
