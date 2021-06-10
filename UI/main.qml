@@ -11,7 +11,7 @@ ApplicationWindow {
 
     property QtObject backend
     property bool start_image: true
-    property url actual_image: "file:///"
+    property url actual_image: ""
 
     StackView {
         anchors.fill: parent
