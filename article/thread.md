@@ -596,3 +596,39 @@ All should be well if you should run this.
 
 
 Now inside our PhotoViewer class we should be crawling the parent folder the image the user wants to see.
+
+```python
+...
+
+class PhotoViewer(QObject):
+
+
+    def __init__(self, currfile=""):
+        super().__init__()
+        self.curr_file = currfile
+        self.curr_index = 0
+        self.folder = ""
+        self.supported_formats = ['.jpeg', '.jpg', '.png', '.gif']
+        self.image_list = deque([])
+
+	def find_other_images(self):
+
+        self.folder = os.path.dirname(self.curr_file)
+        mainfile = os.path.split(self.curr_file)[-1]
+
+        conts = os.listdir(self.folder)
+
+        self.image_list = deque([
+            x for x in conts
+             if os.path.splitext(x)[-1] in self.supported_formats])
+
+        ind = -1
+        for img in self.image_list:
+            ind += 1
+            if mainfile == img:
+                self.curr_index = ind
+
+        print(self.curr_index)
+
+```
+
