@@ -292,7 +292,7 @@ Now inside the main.qml import the CustButton.qml. You do this by importing the 
 ```QML
 ...
 import QtQuick.Layouts 1.15
-import "../customs" as Cust
+import "./customs" as Cust
 
 ...
 ```
@@ -322,3 +322,111 @@ RowLayout {
 
 
 
+Currently the main.qml file looks like:
+
+```QML
+import QtQuick 2.15
+import QtQuick.Controls 2.15
+import QtQuick.Layouts 1.15
+import "./customs" as Cust
+
+ApplicationWindow {
+    visible: true
+    width: 800
+    height: 500
+    title: "Sky viewer"
+    
+    property url actual_image: "./test/some_image.jpg"
+    
+    ColumnLayout {
+        anchors.fill: parent
+        spacing: 0
+
+        Rectangle {
+            id: navbar
+            Layout.fillWidth: true
+            Layout.preferredHeight: 48
+            color: "#77000000"
+        }
+
+        Rectangle {
+            id: img_area
+            Layout.fillWidth: true
+            Layout.fillHeight: true
+            color: "transparent"
+            
+            Image {
+                source: actual_image  // used to be "path/to/some/image"
+                anchors.fill: parent
+                fillMode: Image.PreserveAspectFit
+            }
+            
+        }
+
+    }
+
+    RowLayout {
+    	id: switch_buttons_cont
+        anchors.centerIn: parent
+        width: parent.width
+        height: 56
+        
+        Button {
+            text: "<"
+        }
+
+        Button {
+            Layout.alignment: Qt.AlignRight
+            text: ">"
+        }
+        
+    }
+    
+    
+}
+```
+
+
+
+Now the Design is done
+
+
+
+## Connect the Python
+
+
+
+Open the main.py file and start a Application from there
+
+
+
+```python
+import sys
+
+from PyQt5.QtGui import QGuiApplication
+from PyQt5.QtQml import QQmlApplicationEngine
+
+
+app = QGuiApplication(sys.argv)
+
+engine = QQmlApplicationEngine()
+engine.load('UI/main.qml')
+engine.quit.connect(app.quit)
+
+sys.exit(app.exec())
+
+```
+
+Now the app starts all is well.
+
+
+
+If you open an image, the OS calls the Image viewing app by passing the image's url as a command line argument or parameter as
+
+```shell
+$ path/to/image_viewer_app.exe C:/path/to/image.jpeg
+```
+
+So your app knows what image your showing from the command line argument.
+
+Lets handle command line arguments.
