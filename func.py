@@ -10,7 +10,7 @@ from PyQt5.QtCore import QObject, pyqtSlot, pyqtSignal
 class PhotoViewer(QObject):
 
 
-    def __init__(self, currfile=""):
+    def __init__(self, currfile: str = ""):
         super().__init__()
         self.curr_file = currfile
         self.curr_index = 0
