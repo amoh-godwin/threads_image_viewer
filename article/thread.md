@@ -813,3 +813,50 @@ Any method the `self.find_other_images`, will have it return immediately thinkin
 
 
 Now run it again and the 2 seconds delay is gone, even the sleep code is still there.
+
+Now that we have understood threading concept will won't need the two seconds delay again, you can remove it.
+
+
+
+Next thing we should do is now the user should be able to click the next button for the next image to be shown. That we will create methods that QML buttons will call on click. Such methods are created using slots.
+
+It is recommended that for each function from QML that calls a backend method, you should use threading. In fact, this is the most common use case for threads, where a QML is calling a method. The reason is QML function may have numerous lines, and it executes them in order, but no matter what line a call to a backend code is on, it will first run that one, before it considers the other lines. So it will be a risk, if you have to wait for a backend method to complete before continuing with your logic. So we will use threading right and underscore method right away.
+
+Lets create a slot call get_next_image
+
+In our func.py
+
+```python
+...
+from collections import deque
+
+from PyQt5.QtCore import QObject, pyqtSlot
+
+...
+
+	...
+
+	def _find_other_images(self):
+
+        ...
+
+	@pyqtSlot(str)
+    def get_next_image(self, direction):
+        f_thread = threading.Thread(target=self._get_next_image, args=[direction])
+        f_thread.daemon = True
+        f_thread.start()
+
+    def _get_next_image(self, direction):
+        if direction == 'left':
+            self.curr_index -= 1
+        else:
+            self.curr_index += 1
+
+        curr_img = self.image_list[self.curr_index]
+        self.curr_img = f'file:///{os.path.join(self.folder, curr_img)}'
+        self.change_image()
+
+```
+
+Only a method with a `@pyqtSlot` decorator can be called directly from QML. No other function.
+
