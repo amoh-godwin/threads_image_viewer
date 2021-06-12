@@ -1049,7 +1049,7 @@ ApplicationWindow {
 
 
     Connections {
-            target: viewer
+        target: viewer
 
             function onChangeImage(new_file) {
                 actual_image = new_file
