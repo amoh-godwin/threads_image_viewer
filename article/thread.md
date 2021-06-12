@@ -46,6 +46,8 @@ ApplicationWindow {
 
 I am sure you already know what the above code does. It creates a window with a title **Sky viewer**.
 
+**Add image**
+
 Next we add a Rectangle which will essentially be a background. We haven't discussed layouts yet, but its not complex. You will understand it's usage by practicing with it. So inside the Rectangle we add a ColumnLayout and a RowLayout on top of the ColumnLayout. The RowLayout would hold the previous and next buttons that will be used to switch between images in the same folder.
 
 NB: The three dots (**...**) represents already existing code.
@@ -76,6 +78,8 @@ Rectangle {
 
 ...
 ```
+
+**Add image**
 
 A little not about ColumnLayout and RowLayout is ColumnLayout gives you a column and all the items in there are laid-out as rows whiles a RowLayout gives you a Row and All the items in there are laid-out as columns.
 
@@ -109,6 +113,8 @@ ColumnLayout {
 ...
 ```
 
+**Add image**
+
 The Rectangle that handles the navbar has been given the id: navbar ( not necessary, you can ignore) and a color of black with 77% opacity. The Rectangle that handles the actual image area has and id: **img_area** and  a transparent color, because the app background already has a color of **#1C1B1B**.
 
 
@@ -133,15 +139,15 @@ Rectangle {
 
 
 
-Put some image in the test folder that we created above, to test the layout of the image. 
+Put some image in the test folder that we created above, to test the layout of the image. Or you can download this coffee image, courtesy unsplash
 
 ```QML
 ...
-source: "./test/some_image.jpg"
+source: "./test/coffee_unsplash.jpg"
 ...
 ```
 
-
+**add image**
 
 The anchors.fill: parent and the fillMode: Image.PreserveAspectFit are the ones controling the dimensions of the image. We will need this because:
 
@@ -161,7 +167,7 @@ We will need a property to hold the source of the image because the source will 
 ...
 title: "Sky viewer"
 
-property url actual_image: "./test/some_image.jpg"
+property url actual_image: "./test/coffee_unsplash.jpg"
 
 ...
 ```
@@ -210,6 +216,8 @@ RowLayout {
 }
 ...
 ```
+
+**Add image**
 
 You can see that we have ordinary buttons and that the second one has been aligned to the right side. But we would have to customise the buttons a bit.
 
@@ -338,7 +346,7 @@ ApplicationWindow {
     height: 500
     title: "Sky viewer"
     
-    property url actual_image: "./test/some_image.jpg"
+    property url actual_image: "./test/coffee_unsplash.jpg"
     
     Rectangle {
     	anchors.fill: parent
@@ -362,7 +370,7 @@ ApplicationWindow {
                 color: "transparent"
 
                 Image {
-                    source: actual_image  // used to be "path/to/some/image"
+                    source: actual_image
                     anchors.fill: parent
                     fillMode: Image.PreserveAspectFit
                 }
@@ -397,6 +405,8 @@ ApplicationWindow {
 
 
 Now the Design is done
+
+**Add image**
 
 
 
@@ -434,12 +444,12 @@ $ cd H:/Desktop/threaded_image_viewer
 should give
 
 ```shell
-H:/Desktop/threaded_image_viewer$
+H:/Desktop/threaded_image_viewer>
 ```
 
 
 
-Run it by doing
+Then run the python code by doing
 
 ```shell
 $ python main.py
@@ -448,6 +458,8 @@ $ python main.py
 
 
 Now the app starts all is well.
+
+**Add image**
 
 
 
@@ -507,7 +519,7 @@ Now you should run the file with a command line argument
 $ python main.py ./test/some_image.jpg
 ```
 
-You should see a beautiful image.
+You should see a beautiful image, that you specified.
 
 
 
@@ -595,7 +607,7 @@ All should be well if you should run this.
 
 Now inside our PhotoViewer class we should be crawling the parent folder the image the user wants to see.
 
-Import os, deque for the collections module.
+Import os and deque (pronounced deck) from the collections module.
 
 ```python
 import os
@@ -639,7 +651,7 @@ class PhotoViewer(QObject):
 
 
 
-First of before we are able to crawl the parent folder, the class will have to get access to the filename or the folder name. We pass the filename to it, when we initialise it,
+First of before we are able to crawl the parent folder, the class will have to get access to the filename or the folder name. We pass the filename to it, when we initialize it,
 
 hence the code: 
 ```python
@@ -652,7 +664,7 @@ Notice we are using annotations, so without the annotations the code could have 
 def __init__(self, currfile = ""):
 ```
 
-Also notice that the `self.image_list` is using the deque (pronounced: deck)  advanced type instead of the base list type. This is because the default list doesn't store items according to any particular order and when you keep appending to it on the fly, the indexing begins to misbehave. I recently run into trouble with it, and now I am a fan of the deque type from the collections module.
+Also notice that the `self.image_list` is using the deque advanced type instead of the base list type. This is because the default list doesn't store items according to any particular order and when you keep appending to it on the fly, the indexing begins to misbehave. I recently run into trouble with it, and now I am a fan of the deque type from the collections module.
 
 When it comes to the find_other_images function:
 
@@ -962,8 +974,191 @@ We are done. The last we have to do is to call the get_next_image slot when the 
         }
 ```
 
+So now the complete main.qml code is:
 
+```qml
+import QtQuick 2.15
+import QtQuick.Controls 2.15
+import QtQuick.Layouts 1.15
+import "./customs" as Cust
+
+ApplicationWindow {
+    visible: true
+    width: 800
+    height: 500
+    title: "Sky viewer"
+
+    property QtObject viewer
+    property url actual_image: ""
+
+    Rectangle {
+        anchors.fill: parent
+        color: "#1C1B1B"
+
+        ColumnLayout {
+            anchors.fill: parent
+            spacing: 0
+
+            Rectangle {
+                id: navbar
+                Layout.fillWidth: true
+                Layout.preferredHeight: 48
+                color: "#77000000"
+            }
+
+            Rectangle {
+                id: img_area
+                Layout.fillWidth: true
+                Layout.fillHeight: true
+                color: "transparent"
+
+                Image {
+                    source: actual_image
+                    anchors.fill: parent
+                    fillMode: Image.PreserveAspectFit
+                }
+
+            }
+
+        }
+
+        RowLayout {
+            id: switch_buttons_cont
+            anchors.centerIn: parent
+            width: parent.width
+            height: 56
+
+            Cust.CustButton {
+                text: "<"
+
+                onClicked: viewer.get_next_image('left')
+
+            }
+
+            Cust.CustButton {
+                Layout.alignment: Qt.AlignRight
+                text: ">"
+
+                onClicked: viewer.get_next_image('right')
+
+            }
+
+        }
+
+    }
+
+
+    Connections {
+            target: viewer
+
+            function onChangeImage(new_file) {
+                actual_image = new_file
+            }
+        }
+
+}
+
+```
+
+The complete main.py file is:
+
+```python
+import sys
+import os
+
+
+from PyQt5.QtGui import QGuiApplication
+from PyQt5.QtQml import QQmlApplicationEngine
+
+from func import PhotoViewer
+
+
+if len(sys.argv) > 1:
+    real_path = os.path.realpath(sys.argv[1])
+    user_file = 'file:///' + real_path
+
+
+app = QGuiApplication(sys.argv)
+
+engine = QQmlApplicationEngine()
+engine.load('UI/main.qml')
+engine.quit.connect(app.quit)
+
+photo_viewer = PhotoViewer(currfile=real_path)
+engine.rootObjects()[0].setProperty('viewer', photo_viewer)
+engine.rootObjects()[0].setProperty('actual_image', user_file)
+
+sys.exit(app.exec())
+
+```
+
+The complete func.py is:
+
+```python
+import os
+from collections import deque
+import threading
+
+from PyQt5.QtCore import QObject, pyqtSlot, pyqtSignal
+
+
+class PhotoViewer(QObject):
+
+
+    def __init__(self, currfile=""):
+        super().__init__()
+        self.curr_file = currfile
+        self.curr_index = 0
+        self.folder = ""
+        self.supported_formats = ['.jpeg', '.jpg', '.png', '.gif']
+        self.image_list = deque([])
+
+        self.find_other_images()
+
+    changeImage = pyqtSignal(str, arguments=['change_image'])
+
+    def find_other_images(self) -> None:
+        find_thread = threading.Thread(target=self._find_other_images)
+        find_thread.daemon = True
+        find_thread.start()
+
+    def _find_other_images(self):
+        self.folder = os.path.dirname(self.curr_file)
+        mainfile = os.path.split(self.curr_file)[-1]
+
+        conts = os.listdir(self.folder)
+
+        self.image_list = deque([
+            x for x in conts
+             if os.path.splitext(x)[-1] in self.supported_formats])
+
+        ind = -1
+        for img in self.image_list:
+            ind += 1
+            if mainfile == img:
+                self.curr_index = ind
+
+    @pyqtSlot(str)
+    def get_next_image(self, direction):
+        f_thread = threading.Thread(target=self._get_next_image, args=[direction])
+        f_thread.daemon = True
+        f_thread.start()
+
+    def _get_next_image(self, direction):
+        if direction == 'left':
+            self.curr_index -= 1
+        else:
+            self.curr_index += 1
+
+        curr_img = self.image_list[self.curr_index]
+        curr_img_path = f'file:///{os.path.join(self.folder, curr_img)}'
+        self.changeImage.emit(curr_img_path)
+ 
+```
+
+Download a zip all the complete code.
 
 All done now test it out. Again to fully enjoy this, you should use a folder on your computer that has a lot a files with some images or just a lot of images, like the Downloads folder or the Pictures folder, and test the next and previous buttons.
 
 Enjoy!
+
