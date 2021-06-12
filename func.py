@@ -14,7 +14,6 @@ class PhotoViewer(QObject):
         super().__init__()
         self.curr_file = currfile
         self.curr_index = 0
-        self.curr_img = ""
         self.folder = ""
         self.supported_formats = ['.jpeg', '.jpg', '.png', '.gif']
         self.image_list = deque([])
@@ -60,8 +59,8 @@ class PhotoViewer(QObject):
             self.curr_index += 1
 
         curr_img = self.image_list[self.curr_index]
-        self.curr_img = f'file:///{os.path.join(self.folder, curr_img)}'
-        self.change_image()
+        curr_img_path = f'file:///{os.path.join(self.folder, curr_img)}'
+        self.changeImage.emit(curr_img_path)
 
     def change_image(self):
         self.changeImage.emit(self.curr_img)
