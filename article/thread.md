@@ -1,6 +1,6 @@
 # Threading PyQt5/Qml Applications
 
-Threading is such an important topic in GUI application development without that your app is gonna freeze. And yet python native threading system make it so easy. Qt comes with its on threading system. I think that where in there is a standard library that can handle a task, you shouldn't use a third-party library. This tutorial will discuss threading in python which is also how threading in Qml is done.
+Threading is such an important topic in GUI application development without that your app is gonna freeze. And yet python native threading system make it so easy. Qt comes with its on threading system. This tutorial will discuss threading in python which is also how threading in Qml is done. If you want to study Qt's provided threading classes, read more here.
 
 
 
@@ -46,7 +46,7 @@ ApplicationWindow {
 
 I am sure you already know what the above code does. It creates a window with a title **Sky viewer**.
 
-Next we add a Rectangle which will essentially be a background. We haven't discussed layouts yet, but its not complex. You will understand it usage by practicing with it. So inside the Rectangle we add a ColumnLayout and a RowLayout on top of the ColumnLayout. The RowLayout would hold the left and right button that will be used to switch between images in the same folder.
+Next we add a Rectangle which will essentially be a background. We haven't discussed layouts yet, but its not complex. You will understand it's usage by practicing with it. So inside the Rectangle we add a ColumnLayout and a RowLayout on top of the ColumnLayout. The RowLayout would hold the previous and next buttons that will be used to switch between images in the same folder.
 
 NB: The three dots (**...**) represents already existing code.
 
@@ -64,7 +64,7 @@ Rectangle {
         anchors.fill: parent
         spacing: 0
     }
-    
+
     RowLayout {
     	id: switch_buttons_cont
         anchors.centerIn: parent
@@ -320,6 +320,8 @@ RowLayout {
 ...
 ```
 
+You can hover over  them to take a good look at them
+
 
 
 Currently the main.qml file looks like:
@@ -338,48 +340,54 @@ ApplicationWindow {
     
     property url actual_image: "./test/some_image.jpg"
     
-    ColumnLayout {
-        anchors.fill: parent
-        spacing: 0
+    Rectangle {
+    	anchors.fill: parent
+    	color: "#1C1B1B"
+    
+        ColumnLayout {
+            anchors.fill: parent
+            spacing: 0
 
-        Rectangle {
-            id: navbar
-            Layout.fillWidth: true
-            Layout.preferredHeight: 48
-            color: "#77000000"
-        }
-
-        Rectangle {
-            id: img_area
-            Layout.fillWidth: true
-            Layout.fillHeight: true
-            color: "transparent"
-            
-            Image {
-                source: actual_image  // used to be "path/to/some/image"
-                anchors.fill: parent
-                fillMode: Image.PreserveAspectFit
+            Rectangle {
+                id: navbar
+                Layout.fillWidth: true
+                Layout.preferredHeight: 48
+                color: "#77000000"
             }
-            
-        }
 
-    }
+            Rectangle {
+                id: img_area
+                Layout.fillWidth: true
+                Layout.fillHeight: true
+                color: "transparent"
 
-    RowLayout {
-    	id: switch_buttons_cont
-        anchors.centerIn: parent
-        width: parent.width
-        height: 56
-        
-        Button {
-            text: "<"
-        }
+                Image {
+                    source: actual_image  // used to be "path/to/some/image"
+                    anchors.fill: parent
+                    fillMode: Image.PreserveAspectFit
+                }
 
-        Button {
-            Layout.alignment: Qt.AlignRight
-            text: ">"
+            }
+
+    	}
+
+        RowLayout {
+            id: switch_buttons_cont
+            anchors.centerIn: parent
+            width: parent.width
+            height: 56
+
+            Cust.CustButton {
+                text: "<"
+            }
+
+            Cust.CustButton {
+                Layout.alignment: Qt.AlignRight
+                text: ">"
+            }
+
         }
-        
+    
     }
     
     
@@ -468,6 +476,7 @@ from PyQt5.QtQml import QQmlApplicationEngine
 if len(sys.argv) > 1:
     real_path = os.path.realpath(sys.argv[1])
     user_file = 'file:///' + real_path
+
 
 ...
 
@@ -558,7 +567,8 @@ if len(sys.argv) > 1:
 ...
 engine.quit.connect(app.quit)
 
-back_end = PhotoViewer()
+photo_viewer = PhotoViewer()
+engine.rootObjects()[0].setProperty('viewer', photo_viewer)
 engine.rootObjects()[0].setProperty('actual_image', user_file)
 
 ...
@@ -566,36 +576,26 @@ engine.rootObjects()[0].setProperty('actual_image', user_file)
 
 
 
-Create a QML property backend that will receive the back_end object.
+Create a QML property `viewer` that will receive the `photo_viewer` object.
 
 ```QML
 ...
 title: "Sky viewer"
 
-property QtObject backend
+property QtObject viewer
 property url actual_image: ""
 ...
 ```
 
 
 
-Now set the back_end python object to the backend QML property
-
-```QML
-...
-
-back_end = PhotoViewer()
-engine.rootObjects()[0].setProperty('backend', back_end)
-engine.rootObjects()[0].setProperty('actual_image', user_file)
-
-...
-```
-
 All should be well if you should run this.
 
 
 
 Now inside our PhotoViewer class we should be crawling the parent folder the image the user wants to see.
+
+Import os, deque for the collections module.
 
 ```python
 import os
@@ -697,13 +697,13 @@ Now in the main.py, pass the real_path to the class when we call it.
 ...
 
 back_end = PhotoViewer(currfile=real_path)
-engine.rootObjects()[0].setProperty('backend', back_end)
+engine.rootObjects()[0].setProperty('viewer', photo_viewer)
 ...
 ```
 
 
 
-In most instances, the image might be in a folder that has many other images or files, and that will slow down the time it takes for the UI to be fully ready (even though list comprehensions are fast), it will freeze between the time the `engine.load('UI/main.qml')` was run till the time `back_end = PhotoViewer(currfile=real_path)` is done with the initialization. That will cause our now white UI to be unresponsive for sometime.
+In most instances, the image might be in a folder that has many other images or files, and that will slow down the time it takes for the UI to be fully ready (even though list comprehensions are fast), it will freeze between the time the `engine.load('UI/main.qml')` was run till the time `photo_viewer = PhotoViewer(currfile=real_path)` is done with the initialization. That will cause our now white UI to be unresponsive for sometime.
 
 *show image*
 
@@ -721,7 +721,7 @@ In other for our app to be build for all user cases, we should presume that some
 
 It simple, lets experiment with the sleep function.
 
-Sleep on the `find_other_images` function for 2 seconds, see what happens to the UI.
+Sleep on the `find_other_images` function for 2 seconds, see what happens to the UI. Import the sleep function from the time module
 
 ```python
 import os
@@ -832,6 +832,7 @@ from collections import deque
 
 from PyQt5.QtCore import QObject, pyqtSlot
 
+
 ...
 
 	...
@@ -853,10 +854,116 @@ from PyQt5.QtCore import QObject, pyqtSlot
             self.curr_index += 1
 
         curr_img = self.image_list[self.curr_index]
-        self.curr_img = f'file:///{os.path.join(self.folder, curr_img)}'
-        self.change_image()
+        curr_img_path = f'file:///{os.path.join(self.folder, curr_img)}'
+
 
 ```
 
-Only a method with a `@pyqtSlot` decorator can be called directly from QML. No other function.
+Only a method with a `@pyqtSlot` decorator can be called directly from QML, no other method can.
 
+There is one new thing here in the threading that you haven't seen. `args` parameter. If the method you calling takes arguments, that you pass that to the Thread class through the `args` list parameter.
+
+The parameter `_get_next_image` receives should either left or right. If its left then the user want to see the previous image, we substract the 1 from current index and then show the image at that new index. We will send the `curr_img_path` to the QML layer for that image to be shown. You know how information is sent to QML...Through signals.
+
+
+
+Lets create a signal, lets call it changeImage
+
+```python
+...
+from collections import deque
+
+from PyQt5.QtCore import QObject, pyqtSlot, pyqtSignal
+
+
+class PhotoViewer(QObject):
+
+
+    def __init__(self, currfile: str = ""):
+        ...
+        
+        self.find_other_images()
+
+	changeImage = pyqtSignal(str, arguments=['change_image'])
+
+    def find_other_images(self) -> None:
+        ...
+```
+
+
+
+Now emit the signal in the `_get_next_image` method
+
+```python
+	...
+
+	def _get_next_image(self, direction):
+		...
+
+    	curr_img_path = f'file:///{os.path.join(self.folder, curr_img)}'
+		self.changeImage.emit(curr_img_path)
+
+```
+
+Last but one thing we receive the Signal in QML
+
+```QML
+...
+
+ApplicationWindow {
+    visible: true
+    ...
+    title: "Sky viewer"
+
+	...
+	
+	Rectangle {
+    	anchors.fill: parent
+    	color: "#1C1B1B"
+
+    	...
+    }
+	
+	Connections {
+        target: viewer
+
+        function onChangeImage(new_file) {
+            actual_image = new_file
+        }
+    }
+
+}
+```
+
+We are done. The last we have to do is to call the get_next_image slot when the user click the next and previous buttons.
+
+```QML
+...
+
+		...
+
+		RowLayout {
+            id: switch_buttons_cont
+            ...
+
+            Cust.CustButton {
+                text: "<"
+
+                onClicked: viewer.get_next_image('left')
+            }
+
+            Cust.CustButton {
+                Layout.alignment: Qt.AlignRight
+                text: ">"
+
+                onClicked: viewer.get_next_image('right')
+            }
+
+        }
+```
+
+
+
+All done now test it out. Again to fully enjoy this, you should use a folder on your computer that has a lot a files with some images or just a lot of images, like the Downloads folder or the Pictures folder, and test the next and previous buttons.
+
+Enjoy!
