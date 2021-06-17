@@ -71,6 +71,11 @@ class PhotoDownloader(QObject):
     def __init__(self):
         super().__init__()
 
+    passing = pyqtSignal(str, arguments=['passing'])
+    downloading = pyqtSignal(str, arguments=['downloading'])
+    progressChanged = pyqtSignal(int, arguments=['progressChanged'])
+    downloadComplete = pyqtSignal(str, arguments=['download_complete'])
+
     @pyqtSlot(str)
     def download(self, filename: str) -> None:
         d_thread = threading.Thread(target=self._download, args=[filename])
