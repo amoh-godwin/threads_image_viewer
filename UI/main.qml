@@ -117,6 +117,12 @@ ApplicationWindow {
                     Layout.preferredWidth: 214
                     Layout.preferredHeight: 214
                     Layout.alignment: Qt.AlignCenter
+
+                    Image {
+                        sourceSize: Qt.size(parent.width, parent.height)
+                        source: "./test/placeholder.png"
+                    }
+
                 }
 
                 RowLayout {
