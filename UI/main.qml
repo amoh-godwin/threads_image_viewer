@@ -1,7 +1,7 @@
 import QtQuick 2.15
 import QtQuick.Controls 2.15
 import QtQuick.Layouts 1.15
-import "./components" as Comp
+//import "./components" as Comp
 import "./customs" as Cust
 
 ApplicationWindow {
@@ -26,6 +26,19 @@ ApplicationWindow {
                 Layout.fillWidth: true
                 Layout.preferredHeight: 48
                 color: "#77000000"
+
+                Cust.CustDownButton {
+                    anchors.verticalCenter: parent.verticalCenter
+                    anchors.left: parent.left
+                    anchors.leftMargin: 8
+                    text: "Download Online"
+                    bg_color: "dodgerblue"
+                    radius: 0
+
+                    onClicked: pop.open()
+
+                }
+
 
             }
 
@@ -73,7 +86,8 @@ ApplicationWindow {
 
 
         Popup {
-            visible: true
+            id: pop
+            //visible: true
             anchors.centerIn: parent
             width: parent.width - 128
             height: parent.height - 128
@@ -105,7 +119,6 @@ ApplicationWindow {
                     Layout.alignment: Qt.AlignCenter
                 }
 
-                // image area
                 RowLayout {
                     Layout.fillWidth: true
                     spacing: 12
