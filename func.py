@@ -70,3 +70,12 @@ class PhotoDownloader(QObject):
 
     def __init__(self):
         super().__init__()
+
+    @pyqtSlot(str)
+    def download(self, filename: str) -> None:
+        d_thread = threading.Thread(target=self._download, args=[filename])
+        d_thread.daemon = True
+        d_thread.start()
+
+    def _download(self, filename: str):
+        print(f'download received {filename}')

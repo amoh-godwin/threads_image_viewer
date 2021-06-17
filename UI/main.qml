@@ -131,11 +131,15 @@ ApplicationWindow {
                     spacing: 12
 
                     Cust.CustTextField {
+                        id: url_field
                         Layout.fillWidth: true
                     }
 
                     Cust.CustDownButton {
                         text: "Download"
+
+                        onClicked: downloader.download(url_field.text)
+
                     }
                 }
 
