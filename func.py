@@ -65,3 +65,8 @@ class PhotoViewer(QObject):
     def change_image(self):
         self.changeImage.emit(self.curr_img)
 
+class PhotoDownloader(QObject):
+
+
+    def __init__(self):
+        super().__init__()
