@@ -72,6 +72,57 @@ ApplicationWindow {
         }
 
 
+        Popup {
+            visible: true
+            anchors.centerIn: parent
+            width: parent.width - 128
+            height: parent.height - 128
+            modal: true
+            focus: true
+            closePolicy: Popup.CloseOnEscape
+
+            background: Rectangle {
+                color: "#1C1B1B"
+            }
+
+            ColumnLayout {
+                anchors.fill: parent
+                anchors.margins: 24
+
+                Cust.CustProgress {
+                    id: loader
+                    from: 0
+                    to: 100
+                    value: 90
+                    indeterminate: true
+                    Layout.fillWidth: true
+                    Layout.preferredHeight: 12
+                }
+
+                Rectangle {
+                    Layout.preferredWidth: 214
+                    Layout.preferredHeight: 214
+                    Layout.alignment: Qt.AlignCenter
+                }
+
+                // image area
+                RowLayout {
+                    Layout.fillWidth: true
+                    spacing: 12
+
+                    Cust.CustTextField {
+                        Layout.fillWidth: true
+                    }
+
+                    Cust.CustDownButton {
+                        text: "Download"
+                    }
+                }
+
+            }
+
+        }
+
     }
 
 
