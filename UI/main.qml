@@ -10,7 +10,8 @@ ApplicationWindow {
     height: 500
     title: "Sky viewer"
 
-    property QtObject backend
+    property QtObject viewer
+    property QtObject downloader
     property url actual_image: ""
 
     Rectangle {
@@ -68,7 +69,7 @@ ApplicationWindow {
             Cust.CustButton {
                 text: "<"
 
-                onClicked: backend.get_next_image('left')
+                onClicked: viewer.get_next_image('left')
 
             }
 
@@ -76,7 +77,7 @@ ApplicationWindow {
                 Layout.alignment: Qt.AlignRight
                 text: ">"
 
-                onClicked: backend.get_next_image('right')
+                onClicked: viewer.get_next_image('right')
 
             }
 
@@ -146,7 +147,7 @@ ApplicationWindow {
 
 
     Connections {
-        target: backend
+        target: viewer
 
         function onChangeImage(new_file) {
             actual_image = new_file
