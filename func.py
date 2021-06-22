@@ -1,8 +1,8 @@
 import os
-from sys import argv
 from time import sleep
 import threading
 from collections import deque
+import requests
 
 from PyQt5.QtCore import QObject, pyqtSlot, pyqtSignal
 
