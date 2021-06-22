@@ -23,12 +23,11 @@ class PhotoViewer(QObject):
     changeImage = pyqtSignal(str, arguments=['change_image'])
 
     def find_other_images(self) -> None:
-        f_thread = threading.Thread(target=self._find_other_images)
-        f_thread.daemon = True
-        f_thread.start()
+        find_thread = threading.Thread(target=self._find_other_images)
+        find_thread.daemon = True
+        find_thread.start()
 
     def _find_other_images(self):
-
         self.folder = os.path.dirname(self.curr_file)
         mainfile = os.path.split(self.curr_file)[-1]
 
@@ -43,8 +42,6 @@ class PhotoViewer(QObject):
             ind += 1
             if mainfile == img:
                 self.curr_index = ind
-
-        print(self.curr_index)
 
     @pyqtSlot(str)
     def get_next_image(self, direction):
@@ -62,8 +59,6 @@ class PhotoViewer(QObject):
         curr_img_path = f'file:///{os.path.join(self.folder, curr_img)}'
         self.changeImage.emit(curr_img_path)
 
-    def change_image(self):
-        self.changeImage.emit(self.curr_img)
 
 class PhotoDownloader(QObject):
 

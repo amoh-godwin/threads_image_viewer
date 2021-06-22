@@ -1,7 +1,6 @@
 import QtQuick 2.15
 import QtQuick.Controls 2.15
 import QtQuick.Layouts 1.15
-//import "./components" as Comp
 import "./customs" as Cust
 
 ApplicationWindow {
@@ -139,8 +138,8 @@ ApplicationWindow {
                         text: "Download"
 
                         onClicked: downloader.download(url_field.text)
-
                     }
+
                 }
 
             }
