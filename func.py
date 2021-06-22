@@ -77,5 +77,15 @@ class PhotoDownloader(QObject):
         d_thread.daemon = True
         d_thread.start()
 
-    def _download(self, filename: str):
-        print(f'download received {filename}')
+    def _download(self, url: str):
+        print(f'download received {url}')
+
+        filename = os.path.split(url)[-1]
+        response = requests.get(url, stream=True)
+        total_size_in_bytes= int(response.headers.get('content-length', 0))
+        block_size = 1024 #1 Kibibyte
+
+        with open(filename, 'wb') as b_file:
+            for data in response.iter_content(block_size):
+                b_file.write(data)
+
