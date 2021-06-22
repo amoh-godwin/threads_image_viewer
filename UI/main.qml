@@ -157,5 +157,24 @@ ApplicationWindow {
         }
     }
 
+    Connections {
+        target: downloader
+
+        function onDownloading(status) {
+            loader.indeterminate = status
+        }
+
+        function onProgressChanged(percent) {
+            loader.value = percent
+        }
+
+        function onDownloadComplete(filename) {
+            pop.close()
+            actual_image = 'file:///' + filename
+            print('All done')
+        }
+
+    }
+
 
 }
