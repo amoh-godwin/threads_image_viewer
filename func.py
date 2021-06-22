@@ -67,7 +67,7 @@ class PhotoDownloader(QObject):
         super().__init__()
 
     passing = pyqtSignal(str, arguments=['passing'])
-    downloading = pyqtSignal(str, arguments=['downloading'])
+    downloading = pyqtSignal(bool, arguments=['downloading'])
     progressChanged = pyqtSignal(int, arguments=['progressChanged'])
     downloadComplete = pyqtSignal(str, arguments=['download_complete'])
 
@@ -87,17 +87,19 @@ class PhotoDownloader(QObject):
         total_size_in_bytes = int(response.headers.get('content-length', 0))
         print('total_size_in_bytes {total_size_in_bytes}')
         block_size = 1024
-        
+
         total_downloaded = 0
 
         with open(filename, 'wb') as b_file:
-            self.downloading.emit('')
+            self.downloading.emit(True)
             try:
                 for data in response.iter_content(block_size):
                     total_downloaded += block_size
                     percent = total_downloaded / total_size_in_bytes * 100
                     self.progressChanged.emit(percent)
                     b_file.write(data)
+
+                self.downloadComplete.emit(os.path.abspath(filename))
             except:
                 print('Something happened. Dowload terminated')
 
