@@ -80,12 +80,24 @@ class PhotoDownloader(QObject):
     def _download(self, url: str):
         print(f'download received {url}')
 
+
         filename = os.path.split(url)[-1]
+        print('filename {filename}')
         response = requests.get(url, stream=True)
-        total_size_in_bytes= int(response.headers.get('content-length', 0))
-        block_size = 1024 #1 Kibibyte
+        total_size_in_bytes = int(response.headers.get('content-length', 0))
+        print('total_size_in_bytes {total_size_in_bytes}')
+        block_size = 1024
+        
+        total_downloaded = 0
 
         with open(filename, 'wb') as b_file:
-            for data in response.iter_content(block_size):
-                b_file.write(data)
+            self.downloading.emit('')
+            try:
+                for data in response.iter_content(block_size):
+                    total_downloaded += block_size
+                    percent = total_downloaded / total_size_in_bytes * 100
+                    self.progressChanged.emit(percent)
+                    b_file.write(data)
+            except:
+                print('Something happened. Dowload terminated')
 
