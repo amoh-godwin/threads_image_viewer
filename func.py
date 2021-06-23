@@ -4,6 +4,7 @@ import threading
 from collections import deque
 import requests
 from random import randrange
+from time import sleep
 
 from PyQt5.QtCore import QObject, pyqtSlot, pyqtSignal
 
@@ -83,20 +84,25 @@ class PhotoDownloader(QObject):
 
 
         filename = f"{randrange(1000, 10000)}.jpg"
-        print('filename {filename}')
+        print(f"filename {filename}")
         response = requests.get(url, stream=True)
         total_size_in_bytes = int(response.headers.get('content-length', 0))
-        print('total_size_in_bytes {total_size_in_bytes}')
+        cont_type = str(response.headers.get('content-type', 0))
+        print(cont_type)
+        print(f"total_size_in_bytes {total_size_in_bytes}")
         block_size = 1024
 
         total_downloaded = 0
 
         with open(filename, 'wb') as b_file:
             self.downloading.emit(True)
+            sleep(0.1)
             try:
                 for data in response.iter_content(block_size):
                     total_downloaded += block_size
                     percent = total_downloaded / total_size_in_bytes * 100
+                    print(percent)
+                    sleep(0.01)
                     self.progressChanged.emit(percent)
                     b_file.write(data)
 
