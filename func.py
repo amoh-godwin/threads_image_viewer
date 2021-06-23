@@ -3,6 +3,7 @@ from time import sleep
 import threading
 from collections import deque
 import requests
+from random import randrange
 
 from PyQt5.QtCore import QObject, pyqtSlot, pyqtSignal
 
@@ -81,7 +82,7 @@ class PhotoDownloader(QObject):
         print(f'download received {url}')
 
 
-        filename = os.path.split(url)[-1]
+        filename = f"{randrange(1000, 10000)}.jpg"
         print('filename {filename}')
         response = requests.get(url, stream=True)
         total_size_in_bytes = int(response.headers.get('content-length', 0))
