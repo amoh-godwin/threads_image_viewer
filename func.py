@@ -67,6 +67,10 @@ class PhotoDownloader(QObject):
 
     def __init__(self):
         super().__init__()
+        self.image_types_map = {
+            'image/gif': ".gif",'image/jpeg': ".jpeg",
+            'image/png': ".png",'image/svg+xml': ".svg",
+            'image/tiff': ".tiff"}
 
     passing = pyqtSignal(str, arguments=['passing'])
     downloading = pyqtSignal(bool, arguments=['downloading'])
@@ -82,26 +86,27 @@ class PhotoDownloader(QObject):
     def _download(self, url: str):
         print(f'download received {url}')
 
-
-        filename = f"{randrange(1000, 10000)}.jpg"
-        print(f"filename {filename}")
         response = requests.get(url, stream=True)
+
         total_size_in_bytes = int(response.headers.get('content-length', 0))
         cont_type = str(response.headers.get('content-type', 0))
-        print(cont_type)
-        print(f"total_size_in_bytes {total_size_in_bytes}")
-        block_size = 1024
-
+        block_size = 10240
         total_downloaded = 0
+
+        if cont_type in self.image_types_map:
+            ext = self.image_types_map[cont_type]
+            filename = f"{randrange(1000, 10000)}{ext}"
+        else:
+            return
 
         with open(filename, 'wb') as b_file:
             self.downloading.emit(True)
             sleep(0.1)
+
             try:
                 for data in response.iter_content(block_size):
                     total_downloaded += block_size
                     percent = total_downloaded / total_size_in_bytes * 100
-                    print(percent)
                     sleep(0.01)
                     self.progressChanged.emit(percent)
                     b_file.write(data)
