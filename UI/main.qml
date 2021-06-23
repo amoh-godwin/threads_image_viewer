@@ -161,10 +161,12 @@ ApplicationWindow {
         target: downloader
 
         function onDownloading(status) {
-            loader.indeterminate = status
+            print('received')
+            loader.indeterminate = !status
         }
 
         function onProgressChanged(percent) {
+            print('progress keeps changing')
             loader.value = percent
         }
 
